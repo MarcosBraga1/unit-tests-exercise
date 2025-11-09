@@ -1,7 +1,7 @@
 from tests.fixtures import sobremesa_fixture
 from components.cardapio.sobremesa import Sobremesa
 
-def teste_criar_instancia_sobremesa():
+def test_criar_instancia_sobremesa():
     """Testa se é possível criar uma instância de Sobremesa corretamente"""
     sobremesa = Sobremesa(
         nome="Sorvete",

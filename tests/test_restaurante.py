@@ -1,12 +1,36 @@
-from tests.fixtures import restaurante_fixture
+from tests.fixtures import restaurante_fixture, restaurantes_data
 from components.cardapio.prato import Prato
 from components.cardapio.bebida import Bebida
 from components.cardapio.sobremesa import Sobremesa
+from components.restaurantes import Restaurantes
 from io import StringIO
 import sys
 
 
-def teste_adicionar_item_cardapio(restaurante_fixture):
+def test_instancia_lista_de_restaurantes(restaurantes_data):
+  restaurantes = Restaurantes(restaurantes_data)
+  lista = restaurantes._lista_de_restaurantes
+
+  assert isinstance(lista, list)
+  assert len(lista) == 2
+  assert all(hasattr(r, "_nome") for r in lista)
+  assert lista[0]._nome == "Pizzaria Napoli"
+  assert lista[1]._categoria == "JAPONESA"
+
+def test_avaliacoes_sao_carregadas(restaurantes_data):
+  restaurantes = Restaurantes(restaurantes_data)
+  primeiro = restaurantes._lista_de_restaurantes[0]
+
+  assert primeiro._avaliacoes.media == 4.8
+  assert len(primeiro._avaliacoes.avaliacoes_individuais) == 2
+  assert primeiro._avaliacoes.avaliacoes_individuais[0]["rating"] == 5.0
+
+def test_lista_vazia_sem_restaurantes():
+  data_vazia = {"restaurants": []}
+  restaurantes = Restaurantes(data_vazia)
+  assert restaurantes._lista_de_restaurantes == []
+
+def test_adicionar_item_cardapio(restaurante_fixture):
     """Testa se o método adicionar_no_cardapio adiciona corretamente itens ao cardápio"""
     restaurante = restaurante_fixture
    
@@ -38,8 +62,7 @@ def teste_adicionar_item_cardapio(restaurante_fixture):
     assert len(restaurante._cardapio) == tamanho_antes_bebida + 1
     assert restaurante._cardapio[-1] == nova_bebida
 
-
-def teste_alterar_estado(restaurante_fixture):
+def test_alterar_estado(restaurante_fixture):
     """Testa se o método alternar_estado altera corretamente o estado do restaurante"""
     restaurante = restaurante_fixture
    
@@ -58,8 +81,7 @@ def teste_alterar_estado(restaurante_fixture):
     else:
         assert restaurante.ativo == '❌'
 
-
-def teste_exibir_cardapio(restaurante_fixture):
+def test_exibir_cardapio(restaurante_fixture):
     """Testa se o método exibir_cardapio exibe corretamente o cardápio do restaurante"""
     restaurante = restaurante_fixture
    
@@ -78,8 +100,7 @@ def teste_exibir_cardapio(restaurante_fixture):
 
     assert "R$" in output
 
-
-def teste_processar_cardapio(restaurante_fixture):
+def test_processar_cardapio(restaurante_fixture):
     """Testa se o método processar_cardapio processa corretamente os itens do cardápio"""
     restaurante = restaurante_fixture
    
@@ -116,8 +137,7 @@ def teste_processar_cardapio(restaurante_fixture):
    
     assert len(cardapio_processado) >= 0
 
-
-def teste_calcular_media_avaliacoes(restaurante_fixture):
+def test_calcular_media_avaliacoes(restaurante_fixture):
     """Testa se o método calcular_media_avaliacoes calcula corretamente a média"""
     restaurante = restaurante_fixture
    
